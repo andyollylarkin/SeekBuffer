@@ -6,6 +6,7 @@ import (
 	"io"
 )
 
+// SeekBuffer like bytes.Buffer but with Seek. NOT THREAD SAFE!!!
 type SeekBuffer struct {
 	buff     []byte
 	readPos  int64
