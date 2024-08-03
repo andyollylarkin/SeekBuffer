@@ -120,3 +120,35 @@ func TestSeekBuffer_Seek(t *testing.T) {
 		t.Errorf("Error read seeked buffer. Invalid readed content")
 	}
 }
+
+func TestSeekBuffer_Reset(t *testing.T) {
+	var bb SeekBuffer
+
+	bb.Write([]byte("Hello"))
+
+	if bb.Len() != 5 {
+		t.Error("Invalid write to buffer")
+	}
+
+	bb.Reset()
+
+	if len(bb.buff) != 0 {
+		t.Error("Buffer not reset")
+	}
+}
+
+func TestSeekBuffer_Close(t *testing.T) {
+	var bb SeekBuffer
+
+	bb.Write([]byte("Hello"))
+
+	if bb.Len() != 5 {
+		t.Error("Invalid write to buffer")
+	}
+
+	bb.Close()
+
+	if bb.buff != nil || bb.readPos != 0 || bb.writePos != 0 {
+		t.Error("Buffer not closed properly")
+	}
+}

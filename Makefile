@@ -1,0 +1,3 @@
+test:
+	go test -count=1 -parallel=2 -coverprofile=./cover.out ./...
+	go tool cover -func ./cover.out

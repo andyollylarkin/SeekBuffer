@@ -30,6 +30,10 @@ func (b *SeekBuffer) Bytes() []byte {
 }
 
 func (b *SeekBuffer) Reset() {
+	if b.closed {
+		return
+	}
+
 	b.buff = nil
 	b.writePos = 0
 	b.readPos = 0
@@ -61,6 +65,9 @@ func (b *SeekBuffer) Read(p []byte) (n int, err error) {
 
 func (b *SeekBuffer) Close() error {
 	b.buff = nil
+
+	b.readPos = 0
+	b.writePos = 0
 
 	b.closed = true
 
