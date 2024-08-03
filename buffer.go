@@ -79,7 +79,7 @@ func (b *SeekBuffer) Seek(offset int64, whence int) (int64, error) {
 		return 0, fmt.Errorf("buffer is closed")
 	}
 
-	newPos := b.readPos
+	newPos := b.readPos //nolint
 
 	switch whence {
 	case io.SeekStart:
