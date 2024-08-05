@@ -8,10 +8,15 @@ import (
 
 // SeekBuffer like bytes.Buffer but with Seek. NOT THREAD SAFE!!!
 type SeekBuffer struct {
-	buff     []byte
-	readPos  int64
-	writePos int64
-	closed   bool
+	buff                 []byte
+	readPos              int64
+	writePos             int64
+	closed               bool
+	rewindWhenFullReaded bool
+}
+
+func (b *SeekBuffer) WithAutoRewind() {
+	b.rewindWhenFullReaded = true
 }
 
 func (b *SeekBuffer) grow(n int) {
@@ -58,6 +63,10 @@ func (b *SeekBuffer) Read(p []byte) (n int, err error) {
 	b.readPos += int64(n)
 
 	if b.readPos == b.writePos {
+		if b.rewindWhenFullReaded {
+			b.readPos = 0
+		}
+
 		return n, io.EOF
 	}
 

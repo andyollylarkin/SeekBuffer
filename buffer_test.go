@@ -152,3 +152,29 @@ func TestSeekBuffer_Close(t *testing.T) {
 		t.Error("Buffer not closed properly")
 	}
 }
+
+func TestSeekBuffer_WithAutoRewind(t *testing.T) {
+	var buf SeekBuffer
+
+	buf.WithAutoRewind()
+
+	buf.Write([]byte("Hello"))
+
+	content, err := io.ReadAll(&buf)
+	if err != nil {
+		t.Errorf("Cant read from buffer: %s", err.Error())
+	}
+
+	if string(content) != "Hello" {
+		t.Errorf("Invalid content on first read: %s", err.Error())
+	}
+
+	content2, err := io.ReadAll(&buf)
+	if err != nil {
+		t.Errorf("Cant read from buffer: %s", err.Error())
+	}
+
+	if string(content2) != "Hello" {
+		t.Errorf("Invalid content on second read: %s", err.Error())
+	}
+}
