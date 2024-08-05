@@ -64,7 +64,7 @@ func (b *SeekBuffer) Read(p []byte) (n int, err error) {
 
 	if b.readPos == b.writePos {
 		if b.rewindWhenFullReaded {
-			b.readPos = 0
+			b.Seek(0, io.SeekStart)
 		}
 
 		return n, io.EOF
