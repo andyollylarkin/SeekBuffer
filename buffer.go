@@ -141,7 +141,7 @@ Replace replaces the content of the SeekBuffer
 */
 func (b *SeekBuffer) Replace(p []byte) {
 	if len(p) > len(b.buff) {
-		b.grow(len(p))
+		b.grow(len(p) - int(b.writePos))
 	} else if len(p) < len(b.buff) {
 		b.buff = b.buff[:len(p)]
 	}
