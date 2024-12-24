@@ -135,3 +135,19 @@ func (b *SeekBuffer) Write(p []byte) (n int, err error) {
 
 	return len(p), nil
 }
+
+/*
+Replace replaces the content of the SeekBuffer
+*/
+func (b *SeekBuffer) Replace(p []byte) {
+	if len(p) > len(b.buff) {
+		b.grow(len(p))
+	} else if len(p) < len(b.buff) {
+		b.buff = b.buff[:len(p)]
+	}
+
+	copy(b.buff, p)
+
+	b.writePos = int64(len(p))
+	b.readPos = 0
+}

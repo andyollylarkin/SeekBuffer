@@ -32,3 +32,15 @@ func Benchmark_Read(b *testing.B) {
 		bb.Seek(0, io.SeekStart)
 	}
 }
+
+func Benchmark_Replace(b *testing.B) {
+	var bb SeekBuffer
+
+	for i := 0; i < b.N; i++ {
+		if i%2 == 0 {
+			bb.Replace(make([]byte, 0, i*100))
+		} else {
+			bb.Replace(make([]byte, i*100, (i+1)*100))
+		}
+	}
+}

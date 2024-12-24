@@ -178,3 +178,85 @@ func TestSeekBuffer_WithAutoRewind(t *testing.T) {
 		t.Errorf("Invalid content on second read: %s", err.Error())
 	}
 }
+
+func TestSeekBuffer_Replace(t *testing.T) {
+	var buf SeekBuffer
+	buf.WithAutoRewind()
+
+	buf.Write([]byte("Hello"))
+
+	content, err := io.ReadAll(&buf)
+	if err != nil {
+		t.Errorf("Cant read from buffer: %s", err.Error())
+	}
+
+	if string(content) != "Hello" {
+		t.Errorf("Invalid content after replace: %s", err.Error())
+	}
+
+	buf.Replace([]byte("World"))
+
+	content2, err := io.ReadAll(&buf)
+	if err != nil {
+		t.Errorf("Cant read from buffer: %s", err.Error())
+	}
+
+	if string(content2) != "World" {
+		t.Errorf("Invalid content after replace: %s", err.Error())
+	}
+
+	repBuf := []byte("H")
+
+	buf.Replace(repBuf)
+
+	content3, err := io.ReadAll(&buf)
+	if err != nil {
+		t.Errorf("Cant read from buffer: %s", err.Error())
+	}
+
+	if string(content3) != "H" {
+		t.Errorf("Invalid content after replace: %s", err.Error())
+	}
+}
+
+func TestSeekBuffer_ReplaceAndWrite(t *testing.T) {
+	var buf SeekBuffer
+
+	// Initial write
+	buf.Write([]byte("Hello"))
+
+	// Replace existing content
+	buf.Replace([]byte("World"))
+
+	// Validate replacement
+	content, err := io.ReadAll(&buf)
+	if err != nil {
+		t.Errorf("Cant read from buffer: %s", err.Error())
+	}
+
+	if string(content) != "World" {
+		t.Errorf("Invalid content after replace: %s", err.Error())
+	}
+
+	// Write additional data
+	n, err := buf.Write([]byte(" Again"))
+	if err != nil {
+		t.Errorf("Cant write to buffer: %s", err.Error())
+	}
+
+	if n != 6 {
+		t.Errorf("Invalid write length: expected 6, got %d", n)
+	}
+
+	// Validate final content
+	buf.Seek(0, io.SeekStart)
+	finalContent, err := io.ReadAll(&buf)
+	if err != nil {
+		t.Errorf("Cant read from buffer: %s", err.Error())
+	}
+
+	if string(finalContent) != "World Again" {
+		t.Errorf("Invalid final content: %s", string(finalContent))
+	}
+}
+
